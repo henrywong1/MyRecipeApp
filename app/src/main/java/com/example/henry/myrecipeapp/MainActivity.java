@@ -1,5 +1,6 @@
 package com.example.henry.myrecipeapp;
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,13 +27,17 @@ public class MainActivity extends AppCompatActivity {
     private static String API_ID = BuildConfig.ApiID;
     private static String API_KEY = BuildConfig.ApiKEY;
 
+    public static ArrayList<String> recipeTitle = new ArrayList<String>();
+    public static ArrayList<String> recipeImageURL = new ArrayList<String>();
+    public static ArrayList<String> recipeURL = new ArrayList<String>();
+
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
                 StringBuilder stringBuilder = new StringBuilder();
-                String result = " ";
+                String result;
                 URL url;
                 HttpURLConnection urlConnection = null;
 
@@ -73,7 +79,11 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 0; i < 10; i++){
                     jsonPart = arr.getJSONObject(i);
                     jsonLabel = jsonPart.getJSONObject("recipe");
-                    Log.i("Title", jsonLabel.getString("label"));
+
+                    recipeTitle.add(jsonLabel.getString("label"));
+                    recipeImageURL.add(jsonLabel.getString("image"));
+                    recipeURL.add(jsonLabel.getString("url"));
+
 
                 }
 
@@ -81,10 +91,20 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            for (int i = 0; i < 10; i++) {
+                Log.i(Integer.toString(i+1) + ". Title", recipeTitle.get(i));
+                Log.i(Integer.toString(i+1) + ". Image Url", recipeImageURL.get(i));
+                Log.i(Integer.toString(i+1) + ". Recipe Url", recipeURL.get(i));
+
+            }
+
         }
     }
 
     public void searchRecipe(View view) {
+        recipeTitle.clear();
+        recipeImageURL.clear();
+        recipeURL.clear();
         Log.i("Button","Pressed");
         DownloadTask task = new DownloadTask();
         try {
@@ -93,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,"Fail", Toast.LENGTH_SHORT);
             e.printStackTrace();
         }
+
     }
 
 
