@@ -73,19 +73,18 @@ public class MainActivity extends AppCompatActivity {
 
                 JSONObject jsonObject = new JSONObject(s);
                 String hits = jsonObject.getString("hits");
-
+                Log.i("HITS!!!!!!", hits);
                 JSONArray arr = new JSONArray(hits);
+
                 JSONObject jsonPart;
                 JSONObject jsonLabel;
-                for (int i = 0; i < 10; i++){
+                for (int i = 0; i < arr.length(); i++){
                     jsonPart = arr.getJSONObject(i);
                     jsonLabel = jsonPart.getJSONObject("recipe");
 
                     recipeTitle.add(jsonLabel.getString("label"));
                     recipeImageURL.add(jsonLabel.getString("image"));
                     recipeURL.add(jsonLabel.getString("url"));
-
-
                 }
 
             } catch (Exception e) {
@@ -113,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Button","Pressed");
         DownloadTask task = new DownloadTask();
         try {
-            task.execute("https://api.edamam.com/search?q=" + searchEditText.getText() + "&app_id=$" + API_ID + "&app_key=$" + API_KEY);
+            task.execute("https://api.edamam.com/search?q=" + searchEditText.getText() + "&app_id=$" + API_ID + "&app_key=$" + API_KEY + "&from=0&to=15&");
         }catch (Exception e) {
             Toast.makeText(this,"Fail", Toast.LENGTH_SHORT);
             e.printStackTrace();
