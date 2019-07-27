@@ -1,5 +1,6 @@
 package com.example.henry.myrecipeapp;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -90,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            Intent intent = new Intent(getApplicationContext(), listActivity.class);
+            startActivity(intent);
+
 
             for (int i = 0; i < 10; i++) {
                 Log.i(Integer.toString(i+1) + ". Title", recipeTitle.get(i));
