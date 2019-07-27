@@ -2,6 +2,7 @@ package com.example.henry.myrecipeapp;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,7 +32,27 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> recipeTitle = new ArrayList<String>();
     public static ArrayList<String> recipeImageURL = new ArrayList<String>();
     public static ArrayList<String> recipeURL = new ArrayList<String>();
+    public static ArrayList<Bitmap> bitmapArray = new ArrayList<Bitmap>();
 
+    public class DownloadImages extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.connect();
+                InputStream in = urlConnection.getInputStream();
+
+                Bitmap myBitmap =  BitmapFactory.decodeStream(in);
+
+                return myBitmap;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }
+    }
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
 
@@ -68,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-
+            DownloadImages imgDownloader = new DownloadImages();
             try {
 
                 JSONObject jsonObject = new JSONObject(s);
@@ -78,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
                 JSONObject jsonPart;
                 JSONObject jsonLabel;
+
                 for (int i = 0; i < arr.length(); i++){
                     jsonPart = arr.getJSONObject(i);
                     jsonLabel = jsonPart.getJSONObject("recipe");
@@ -85,22 +107,23 @@ public class MainActivity extends AppCompatActivity {
                     recipeTitle.add(jsonLabel.getString("label"));
                     recipeImageURL.add(jsonLabel.getString("image"));
                     recipeURL.add(jsonLabel.getString("url"));
+
+                    bitmapArray.add(imgDownloader.execute(recipeImageURL.get(i)).get());            // cannot keep on executing call.
+                    Log.i("SIZE AS OF NOW!!!!!!!!!!!!!!!!!!!!!!!!!!", Integer.toString(bitmapArray.size()));
+
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
+
+            Log.i("BITMAP SIZE", Integer.toString(bitmapArray.size()));
+
             Intent intent = new Intent(getApplicationContext(), listActivity.class);
             startActivity(intent);
 
 
-            for (int i = 0; i < 10; i++) {
-                Log.i(Integer.toString(i+1) + ". Title", recipeTitle.get(i));
-                Log.i(Integer.toString(i+1) + ". Image Url", recipeImageURL.get(i));
-                Log.i(Integer.toString(i+1) + ". Recipe Url", recipeURL.get(i));
-
-            }
 
         }
     }
@@ -109,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         recipeTitle.clear();
         recipeImageURL.clear();
         recipeURL.clear();
+        bitmapArray.clear();
         Log.i("Button","Pressed");
         DownloadTask task = new DownloadTask();
         try {
