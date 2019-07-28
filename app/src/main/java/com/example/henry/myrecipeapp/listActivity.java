@@ -55,7 +55,7 @@ public class listActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return MainActivity.drawables.size();
+            return MainActivity.bitmapArrayList.size();
         }
 
         @Override
@@ -76,8 +76,7 @@ public class listActivity extends AppCompatActivity {
 
 
 
-            imageView.setImageDrawable(MainActivity.drawables.get(i));
-//            Log.i("TESING BOSEJNGISEGNSEOI", MainActivity.drawables.get(i));
+            imageView.setImageBitmap(MainActivity.bitmapArrayList.get(i));
             textView.setText(MainActivity.recipeTitle.get(i));
             return view;
         }

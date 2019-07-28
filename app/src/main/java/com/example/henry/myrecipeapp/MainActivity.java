@@ -21,9 +21,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,19 +38,43 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> recipeTitle = new ArrayList<String>();
     public static ArrayList<String> recipeImageURL = new ArrayList<String>();
     public static ArrayList<String> recipeURL = new ArrayList<String>();
-    public static ArrayList<Drawable> drawables = new ArrayList<Drawable>();
+    public static ArrayList<Bitmap> bitmapArrayList = new ArrayList<Bitmap>();
 
 
-    public static Drawable LoadImageFromWebOperations(String url) {
-        try {
-            InputStream is = (InputStream) new URL(url).getContent();
-            Drawable d = Drawable.createFromStream(is, null);
+    public class DownloadImage extends AsyncTask<ArrayList<String> , Void, ArrayList<Bitmap>>{
+        @Override
+        protected ArrayList<Bitmap> doInBackground(ArrayList<String>[] urls) {
+            HttpURLConnection urlConnection;
+            ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
+            Log.i("LENGTHHHHHHHHHHH OF URLLL", Integer.toString(urls.length));
+            int counter = 0;
 
-            return d;
-        } catch (Exception e) {
-            return null;
+
+            Log.i("LOOK AT MEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", urls[0].toString());
+            try {
+                for (int i = 0; i < urls[0].size(); i++) {
+                    URL imgUrl = new URL(urls[0].get(i).toString());
+
+                    urlConnection = (HttpURLConnection) imgUrl.openConnection();
+                    urlConnection.connect();
+                    InputStream in = urlConnection.getInputStream();
+
+                    Bitmap myBitmap = BitmapFactory.decodeStream(in);
+
+                    bitmaps.add(myBitmap);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return bitmaps;
         }
+
+
     }
+
+
 
     public class DownloadTask extends AsyncTask<String, Void, String> {
 
@@ -58,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
             String result;
             URL url;
             HttpURLConnection urlConnection = null;
+
+
 
             try{
                 url = new URL(urls[0]);
@@ -104,8 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     recipeImageURL.add(jsonLabel.getString("image"));
                     recipeURL.add(jsonLabel.getString("url"));
 
-                    Drawable img  = LoadImageFromWebOperations(recipeImageURL.get(i));
-                    drawables.add(img);
+
                 }
 
             } catch (Exception e) {
@@ -113,10 +140,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-//
-//            for (Drawable d : drawables) {
-//                System.out.println("drawable item: " + d.getBounds());
-//            }
+            DownloadImage imgTask = new DownloadImage();
+            try {
+                bitmapArrayList = imgTask.execute(recipeImageURL).get();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             Intent intent = new Intent(getApplicationContext(), listActivity.class);
             startActivity(intent);
@@ -130,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         recipeTitle.clear();
         recipeImageURL.clear();
         recipeURL.clear();
-        drawables.clear();
+        bitmapArrayList.clear();
         Log.i("Button","Pressed");
         DownloadTask task = new DownloadTask();
         try {
