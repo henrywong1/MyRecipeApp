@@ -3,6 +3,7 @@ package com.example.henry.myrecipeapp;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,11 +16,14 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.Buffer;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,25 +36,17 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> recipeTitle = new ArrayList<String>();
     public static ArrayList<String> recipeImageURL = new ArrayList<String>();
     public static ArrayList<String> recipeURL = new ArrayList<String>();
-    public static ArrayList<Bitmap> bitmapArray = new ArrayList<Bitmap>();
+    public static ArrayList<Drawable> drawables = new ArrayList<Drawable>();
 
-    public class DownloadImages extends AsyncTask<String, Void, Bitmap> {
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            try {
-                URL url = new URL(urls[0]);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.connect();
-                InputStream in = urlConnection.getInputStream();
 
-                Bitmap myBitmap =  BitmapFactory.decodeStream(in);
+    public static Drawable LoadImageFromWebOperations(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, null);
 
-                return myBitmap;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-
+            return d;
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -58,29 +54,29 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... urls) {
-                StringBuilder stringBuilder = new StringBuilder();
-                String result;
-                URL url;
-                HttpURLConnection urlConnection = null;
+            StringBuilder stringBuilder = new StringBuilder();
+            String result;
+            URL url;
+            HttpURLConnection urlConnection = null;
 
-                try{
-                    url = new URL(urls[0]);
-                    urlConnection = (HttpURLConnection) url.openConnection();
-                    InputStream in = urlConnection.getInputStream();
-                    InputStreamReader reader = new InputStreamReader(in);
+            try{
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
 
-                    int data = reader.read();
+                int data = reader.read();
 
-                    while (data != -1) {
-                        char curr  = (char) data;
-                        stringBuilder.append(curr);
-                        data = reader.read();
-                    }
-                    result = stringBuilder.toString();
-                    return result;
+                while (data != -1) {
+                    char curr  = (char) data;
+                    stringBuilder.append(curr);
+                    data = reader.read();
+                }
+                result = stringBuilder.toString();
+                return result;
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
 
@@ -89,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            DownloadImages imgDownloader = new DownloadImages();
             try {
 
                 JSONObject jsonObject = new JSONObject(s);
@@ -100,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonPart;
                 JSONObject jsonLabel;
 
+
                 for (int i = 0; i < arr.length(); i++){
                     jsonPart = arr.getJSONObject(i);
                     jsonLabel = jsonPart.getJSONObject("recipe");
@@ -108,9 +104,8 @@ public class MainActivity extends AppCompatActivity {
                     recipeImageURL.add(jsonLabel.getString("image"));
                     recipeURL.add(jsonLabel.getString("url"));
 
-                    bitmapArray.add(imgDownloader.execute(recipeImageURL.get(i)).get());            // cannot keep on executing call.
-                    Log.i("SIZE AS OF NOW!!!!!!!!!!!!!!!!!!!!!!!!!!", Integer.toString(bitmapArray.size()));
-
+                    Drawable img  = LoadImageFromWebOperations(recipeImageURL.get(i));
+                    drawables.add(img);
                 }
 
             } catch (Exception e) {
@@ -118,7 +113,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-            Log.i("BITMAP SIZE", Integer.toString(bitmapArray.size()));
+//
+//            for (Drawable d : drawables) {
+//                System.out.println("drawable item: " + d.getBounds());
+//            }
 
             Intent intent = new Intent(getApplicationContext(), listActivity.class);
             startActivity(intent);
@@ -132,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         recipeTitle.clear();
         recipeImageURL.clear();
         recipeURL.clear();
-        bitmapArray.clear();
+        drawables.clear();
         Log.i("Button","Pressed");
         DownloadTask task = new DownloadTask();
         try {

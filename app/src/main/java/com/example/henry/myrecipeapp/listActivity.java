@@ -2,6 +2,9 @@ package com.example.henry.myrecipeapp;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +17,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class listActivity extends AppCompatActivity {
 
@@ -48,7 +55,7 @@ public class listActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return MainActivity.bitmapArray.size();
+            return MainActivity.drawables.size();
         }
 
         @Override
@@ -67,7 +74,10 @@ public class listActivity extends AppCompatActivity {
             ImageView imageView = view.findViewById(R.id.imageView);
             TextView textView = view.findViewById(R.id.infoTextView);
 
-            imageView.setImageBitmap(MainActivity.bitmapArray.get(i));
+
+
+            imageView.setImageDrawable(MainActivity.drawables.get(i));
+//            Log.i("TESING BOSEJNGISEGNSEOI", MainActivity.drawables.get(i));
             textView.setText(MainActivity.recipeTitle.get(i));
             return view;
         }
