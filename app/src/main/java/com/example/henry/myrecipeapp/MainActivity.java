@@ -46,11 +46,7 @@ public class MainActivity extends AppCompatActivity {
         protected ArrayList<Bitmap> doInBackground(ArrayList<String>[] urls) {
             HttpURLConnection urlConnection;
             ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
-            Log.i("LENGTHHHHHHHHHHH OF URLLL", Integer.toString(urls.length));
-            int counter = 0;
 
-
-            Log.i("LOOK AT MEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE", urls[0].toString());
             try {
                 for (int i = 0; i < urls[0].size(); i++) {
                     URL imgUrl = new URL(urls[0].get(i).toString());
@@ -67,13 +63,10 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return bitmaps;
         }
 
-
     }
-
 
 
     public class DownloadTask extends AsyncTask<String, Void, String> {

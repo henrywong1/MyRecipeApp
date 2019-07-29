@@ -9,11 +9,10 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="395dp"
-        android:layout_height="678dp"
+        android:layout_height="725dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
