@@ -1,5 +1,6 @@
 package com.example.henry.myrecipeapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button button;
     EditText searchEditText;
+    ProgressBar progressBar;
 
     private static String API_ID = BuildConfig.ApiID;
     private static String API_KEY = BuildConfig.ApiKEY;
@@ -69,7 +72,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class DownloadTask extends AsyncTask<String, Void, String> {
+    public class DownloadTask extends AsyncTask<String, Integer, String> {
+        @Override
+        protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progressBar.setProgress(values[0]);
+        }
 
         @Override
         protected String doInBackground(String... urls) {
@@ -141,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            progressBar.setVisibility(View.INVISIBLE);
+
             Intent intent = new Intent(getApplicationContext(), listActivity.class);
             startActivity(intent);
 
@@ -174,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
         button = findViewById(R.id.searchButton);
         searchEditText = findViewById(R.id.searchEditText);
-
+        progressBar = findViewById(R.id.progressBar);
 
     }
 }
