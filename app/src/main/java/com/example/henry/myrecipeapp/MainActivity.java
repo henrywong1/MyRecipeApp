@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     public class DownloadTask extends AsyncTask<String, Integer, String> {
         @Override
         protected void onPreExecute() {
+            button.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
         }
 
@@ -154,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             progressBar.setVisibility(View.INVISIBLE);
-
+            button.setEnabled(true);
             Intent intent = new Intent(getApplicationContext(), listActivity.class);
             startActivity(intent);
 
@@ -168,6 +169,9 @@ public class MainActivity extends AppCompatActivity {
         recipeImageURL.clear();
         recipeURL.clear();
         bitmapArrayList.clear();
+
+
+
         Log.i("Button","Pressed");
         DownloadTask task = new DownloadTask();
         try {
@@ -189,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.searchButton);
         searchEditText = findViewById(R.id.searchEditText);
         progressBar = findViewById(R.id.progressBar);
+
+
+
 
     }
 }

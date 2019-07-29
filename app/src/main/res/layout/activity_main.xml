@@ -9,6 +9,7 @@
 
     <EditText
         android:id="@+id/searchEditText"
+        style="@android:style/Widget.Material.EditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="513dp"
