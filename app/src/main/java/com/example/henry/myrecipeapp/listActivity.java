@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,7 +34,6 @@ public class listActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
 
         listView = findViewById(R.id.listView);
-        //ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, MainActivity.recipeTitle);
 
         CustomAdapter customAdapter = new CustomAdapter();
 
@@ -75,9 +75,11 @@ public class listActivity extends AppCompatActivity {
             TextView textView = view.findViewById(R.id.infoTextView);
 
 
-
+            
             imageView.setImageBitmap(MainActivity.bitmapArrayList.get(i));
             textView.setText(MainActivity.recipeTitle.get(i));
+
+
             return view;
         }
     }

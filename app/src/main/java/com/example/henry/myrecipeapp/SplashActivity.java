@@ -17,9 +17,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
-        final RotateAnimation anim = new RotateAnimation(0f,350f, 15f, 15f);
-        anim.setInterpolator(new LinearInterpolator());
-        anim.setDuration(3000);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
