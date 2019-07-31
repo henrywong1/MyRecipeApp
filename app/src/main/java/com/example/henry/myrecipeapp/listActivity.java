@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -72,10 +74,10 @@ public class listActivity extends AppCompatActivity {
         public View getView(int i, View convertView, ViewGroup viewGroup) {
             View view = getLayoutInflater().inflate(R.layout.customlistlayout, null);
             ImageView imageView = view.findViewById(R.id.imageView);
-            TextView textView = view.findViewById(R.id.infoTextView);
+            TextView textView = view.findViewById(R.id.textView);
 
 
-            
+
             imageView.setImageBitmap(MainActivity.bitmapArrayList.get(i));
             textView.setText(MainActivity.recipeTitle.get(i));
 
