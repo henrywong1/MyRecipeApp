@@ -1,5 +1,6 @@
 package com.example.henry.myrecipeapp;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,10 +10,16 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -36,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     EditText searchEditText;
     ProgressBar progressBar;
 
+    ActivityManager act;
+
     private static String API_ID = BuildConfig.ApiID;
     private static String API_KEY = BuildConfig.ApiKEY;
 
@@ -43,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> recipeImageURL = new ArrayList<String>();
     public static ArrayList<String> recipeURL = new ArrayList<String>();
     public static ArrayList<Bitmap> bitmapArrayList = new ArrayList<Bitmap>();
+    int resultBegin = 0;
+    int resultEnd = 15;
+
+
 
 
     public class DownloadImage extends AsyncTask<ArrayList<String> , Void, ArrayList<Bitmap>>{
@@ -165,22 +178,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void searchRecipe(View view) {
-        recipeTitle.clear();
-        recipeImageURL.clear();
-        recipeURL.clear();
-        bitmapArrayList.clear();
-
-
 
         Log.i("Button","Pressed");
+        search(resultBegin,resultEnd);
+
+    }
+
+    public void search(int start, int end) {
         DownloadTask task = new DownloadTask();
-        try {
-            task.execute("https://api.edamam.com/search?q=" + searchEditText.getText() + "&app_id=$" + API_ID + "&app_key=$" + API_KEY + "&from=0&to=15&");
-        }catch (Exception e) {
-            Toast.makeText(this,"Fail", Toast.LENGTH_SHORT);
+        try{
+            task.execute("https://api.edamam.com/search?q=" + searchEditText.getText() + "&app_id=$" + API_ID + "&app_key=$" + API_KEY + "&from=" + start + "&to=" + end +"&");
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -194,6 +204,23 @@ public class MainActivity extends AppCompatActivity {
         searchEditText = findViewById(R.id.searchEditText);
         progressBar = findViewById(R.id.progressBar);
 
+        recipeTitle.clear();
+        recipeImageURL.clear();
+        recipeURL.clear();
+        bitmapArrayList.clear();
+
+
+
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_SEARCH) {
+                    searchRecipe(button);
+                    return true;
+                }
+                return false;
+            }
+        });
 
 
 

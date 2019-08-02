@@ -12,11 +12,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -25,11 +27,12 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
 public class listActivity extends AppCompatActivity {
 
     ListView listView;
 
-
+    MainActivity main = new MainActivity();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +41,7 @@ public class listActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
 
         CustomAdapter customAdapter = new CustomAdapter();
+
 
 
 
@@ -51,6 +55,24 @@ public class listActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount != 0) {
+                    // add items;
+
+                    Log.i("LOADING", "MORE RESULTS!!!!!!!!!!!!");
+                }
+
+            }
+        });
+
     }
 
     class CustomAdapter extends BaseAdapter {
