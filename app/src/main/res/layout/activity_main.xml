@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/food1"
+    android:background="@drawable/food"
     tools:context="com.example.henry.myrecipeapp.MainActivity">
 
     <EditText
@@ -32,41 +32,27 @@
         android:id="@+id/searchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="343dp"
-        android:layout_marginTop="122dp"
+        android:layout_marginBottom="432dp"
         android:onClick="searchRecipe"
         android:text="Search!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchEditText"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="38dp"
+        android:layout_marginBottom="54dp"
         android:layout_marginEnd="182dp"
         android:layout_marginStart="181dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="90dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/searchButton"
+        app:layout_constraintBottom_toTopOf="@+id/searchEditText"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchEditText" />
-
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="64dp"
-        android:layout_height="73dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="315dp"
-        android:layout_marginStart="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ricebowl" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -31,6 +31,7 @@ import java.net.URL;
 public class listActivity extends AppCompatActivity {
 
     ListView listView;
+    ProgressBar loadRecipes;
 
     MainActivity main = new MainActivity();
     @Override
@@ -40,9 +41,9 @@ public class listActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.listView);
 
-        CustomAdapter customAdapter = new CustomAdapter();
+        final CustomAdapter customAdapter = new CustomAdapter();
 
-
+        loadRecipes = findViewById(R.id.loadMoreProgressBar);
 
 
         listView.setAdapter(customAdapter);
@@ -65,8 +66,8 @@ public class listActivity extends AppCompatActivity {
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount != 0) {
-                    // add items;
-
+                    // add items when reached end of list. Change result begin and end.
+                    // Implement Download Task within ListActivity, with image downloader? but with updated search results, then update listview.
                     Log.i("LOADING", "MORE RESULTS!!!!!!!!!!!!");
                 }
 

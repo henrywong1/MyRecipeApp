@@ -43,10 +43,10 @@ public class MainActivity extends AppCompatActivity {
     EditText searchEditText;
     ProgressBar progressBar;
 
-    ActivityManager act;
-
     private static String API_ID = BuildConfig.ApiID;
     private static String API_KEY = BuildConfig.ApiKEY;
+
+    String word;
 
     public static ArrayList<String> recipeTitle = new ArrayList<String>();
     public static ArrayList<String> recipeImageURL = new ArrayList<String>();
@@ -54,9 +54,6 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Bitmap> bitmapArrayList = new ArrayList<Bitmap>();
     int resultBegin = 0;
     int resultEnd = 15;
-
-
-
 
     public class DownloadImage extends AsyncTask<ArrayList<String> , Void, ArrayList<Bitmap>>{
         @Override
@@ -89,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
     public class DownloadTask extends AsyncTask<String, Integer, String> {
         @Override
         protected void onPreExecute() {
-            button.setEnabled(false);
             progressBar.setVisibility(View.VISIBLE);
         }
 
@@ -144,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonLabel;
 
 
-                for (int i = 0; i < arr.length(); i++){
+                for (int i = resultBegin; i < resultEnd; i++){
                     jsonPart = arr.getJSONObject(i);
                     jsonLabel = jsonPart.getJSONObject("recipe");
 
@@ -168,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             progressBar.setVisibility(View.INVISIBLE);
-            button.setEnabled(true);
+
             Intent intent = new Intent(getApplicationContext(), listActivity.class);
             startActivity(intent);
 
@@ -180,14 +176,16 @@ public class MainActivity extends AppCompatActivity {
     public void searchRecipe(View view) {
 
         Log.i("Button","Pressed");
-        search(resultBegin,resultEnd);
+        word = searchEditText.getText().toString();
+        search(resultBegin,resultEnd, word);
+        button.setEnabled(false);
 
     }
 
-    public void search(int start, int end) {
+    public void search(int start, int end, String word) {
         DownloadTask task = new DownloadTask();
         try{
-            task.execute("https://api.edamam.com/search?q=" + searchEditText.getText() + "&app_id=$" + API_ID + "&app_key=$" + API_KEY + "&from=" + start + "&to=" + end +"&");
+            task.execute("https://api.edamam.com/search?q=" + word + "&app_id=$" + API_ID + "&app_key=$" + API_KEY + "&from=" + start + "&to=" + end +"&");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -204,6 +202,8 @@ public class MainActivity extends AppCompatActivity {
         searchEditText = findViewById(R.id.searchEditText);
         progressBar = findViewById(R.id.progressBar);
 
+        searchEditText.setText("");
+        button.setEnabled(true);
         recipeTitle.clear();
         recipeImageURL.clear();
         recipeURL.clear();
