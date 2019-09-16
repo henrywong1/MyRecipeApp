@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             HttpURLConnection urlConnection = null;
 
 
-
             try{
                 url = new URL(urls[0]);
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -168,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), listActivity.class);
             startActivity(intent);
 
-
+            button.setEnabled(true);
 
         }
     }
