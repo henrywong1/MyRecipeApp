@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -48,6 +49,8 @@ public class listActivity extends AppCompatActivity {
 
         listView.setAdapter(customAdapter);
 
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -74,6 +77,18 @@ public class listActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == event.KEYCODE_BACK) {
+            MainActivity.bitmapArrayList.clear();
+            MainActivity.recipeImageURL.clear();
+            MainActivity.recipeURL.clear();
+            MainActivity.recipeTitle.clear();
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     class CustomAdapter extends BaseAdapter {
