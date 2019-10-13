@@ -52,14 +52,13 @@ public class MainActivity extends AppCompatActivity {
     int resultBegin = 0;
     int resultEnd = 15;
 
-    public class DownloadImage extends AsyncTask<String, Void, Bitmap>{
+    public class DownloadImage extends AsyncTask<ArrayList<String>, Void, Void>{
         @Override
-        protected Bitmap doInBackground(String[] urls) {
+        protected Void doInBackground(ArrayList<String>[] urls) {
             HttpURLConnection urlConnection;
-            Bitmap image = null;
             try {
-
-                    URL imgUrl = new URL(urls[0].toString());
+                for (int i = 0; i < urls[0].size(); i++) {
+                    URL imgUrl = new URL(urls[0].get(i));
 
                     urlConnection = (HttpURLConnection) imgUrl.openConnection();
                     urlConnection.connect();
@@ -67,14 +66,16 @@ public class MainActivity extends AppCompatActivity {
 
                     Bitmap myBitmap = BitmapFactory.decodeStream(in);
 
-                    image = myBitmap;
+                    recipes.get(i).setRecipeImage(myBitmap);
+                }
 
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return image;
+            return null;
         }
+
 
     }
 
@@ -159,14 +160,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             DownloadImage imgTask = new DownloadImage();
+            ArrayList<String> tempImgUrl = new ArrayList<String>();
+            for (int i = 0; i < recipes.size(); i++){
+                 tempImgUrl.add(recipes.get(i).getRecipeImageURL());
+            }
             try {
-                for (int i = 0; i < recipes.size(); i++){
-                    recipes.get(i).setRecipeImage(imgTask.execute(recipes.get(i).getRecipeTitle().toString()).get());
-
-                }
-
-
-                
+                imgTask.execute(tempImgUrl).get();
             } catch (Exception e) {
                 e.printStackTrace();
             }
