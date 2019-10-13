@@ -47,23 +47,19 @@ public class MainActivity extends AppCompatActivity {
     private static String API_KEY = BuildConfig.ApiKEY;
 
     String word;
-
-    public static ArrayList<String> recipeTitle = new ArrayList<String>();
-    public static ArrayList<String> recipeImageURL = new ArrayList<String>();
-    public static ArrayList<String> recipeURL = new ArrayList<String>();
-    public static ArrayList<Bitmap> bitmapArrayList = new ArrayList<Bitmap>();
+    public static ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+  
     int resultBegin = 0;
     int resultEnd = 15;
 
-    public class DownloadImage extends AsyncTask<ArrayList<String> , Void, ArrayList<Bitmap>>{
+    public class DownloadImage extends AsyncTask<String, Void, Bitmap>{
         @Override
-        protected ArrayList<Bitmap> doInBackground(ArrayList<String>[] urls) {
+        protected Bitmap doInBackground(String[] urls) {
             HttpURLConnection urlConnection;
-            ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();
-
+            Bitmap image = null;
             try {
-                for (int i = 0; i < urls[0].size(); i++) {
-                    URL imgUrl = new URL(urls[0].get(i).toString());
+
+                    URL imgUrl = new URL(urls[0].toString());
 
                     urlConnection = (HttpURLConnection) imgUrl.openConnection();
                     urlConnection.connect();
@@ -71,13 +67,13 @@ public class MainActivity extends AppCompatActivity {
 
                     Bitmap myBitmap = BitmapFactory.decodeStream(in);
 
-                    bitmaps.add(myBitmap);
-                }
+                    image = myBitmap;
+
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return bitmaps;
+            return image;
         }
 
     }
@@ -143,9 +139,12 @@ public class MainActivity extends AppCompatActivity {
                     jsonPart = arr.getJSONObject(i);
                     jsonLabel = jsonPart.getJSONObject("recipe");
 
-                    recipeTitle.add(jsonLabel.getString("label"));
-                    recipeImageURL.add(jsonLabel.getString("image"));
-                    recipeURL.add(jsonLabel.getString("url"));
+                    String title = jsonLabel.getString("label");
+                    String imgUrl = jsonLabel.getString("image");
+                    String recipeUrl = jsonLabel.getString("url");
+                    Recipe info = new Recipe(title, imgUrl, recipeUrl );
+
+                    recipes.add(info);
 
                 }
 
@@ -153,11 +152,21 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            for (int i = 0; i < recipes.size(); i++){
+                Log.i("Recipe title at ",  Integer.toString(i) + " = " + recipes.get(i).getRecipeTitle());
+                Log.i("Recipe Image URL at " , Integer.toString(i) + " = " + recipes.get(i).getRecipeImageURL());
+                Log.i("Recipe URL at " , Integer.toString(i) + " = " + recipes.get(i).getRecipeURL());
+            }
 
             DownloadImage imgTask = new DownloadImage();
             try {
-                bitmapArrayList = imgTask.execute(recipeImageURL).get();
+                for (int i = 0; i < recipes.size(); i++){
+                    recipes.get(i).setRecipeImage(imgTask.execute(recipes.get(i).getRecipeTitle().toString()).get());
 
+                }
+
+
+                
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -205,11 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
         searchEditText.setText("");
         button.setEnabled(true);
-        recipeTitle.clear();
-        recipeImageURL.clear();
-        recipeURL.clear();
-        bitmapArrayList.clear();
-
+        recipes.clear();
 
 
         searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {

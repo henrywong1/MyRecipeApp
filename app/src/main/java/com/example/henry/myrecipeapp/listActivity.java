@@ -34,7 +34,6 @@ public class listActivity extends AppCompatActivity {
     ListView listView;
     ProgressBar loadRecipes;
 
-    MainActivity main = new MainActivity();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +54,7 @@ public class listActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getApplicationContext(), webActivity.class);
-                intent.putExtra("url", MainActivity.recipeURL.get(i));
+                intent.putExtra("url", MainActivity.recipes.get(i).getRecipeURL());
                 startActivity(intent);
             }
         });
@@ -82,10 +81,7 @@ public class listActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == event.KEYCODE_BACK) {
-            MainActivity.bitmapArrayList.clear();
-            MainActivity.recipeImageURL.clear();
-            MainActivity.recipeURL.clear();
-            MainActivity.recipeTitle.clear();
+            MainActivity.recipes.clear();
         }
 
         return super.onKeyDown(keyCode, event);
@@ -95,7 +91,7 @@ public class listActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return MainActivity.bitmapArrayList.size();
+            return MainActivity.recipes.size();
         }
 
         @Override
@@ -116,8 +112,8 @@ public class listActivity extends AppCompatActivity {
 
 
 
-            imageView.setImageBitmap(MainActivity.bitmapArrayList.get(i));
-            textView.setText(MainActivity.recipeTitle.get(i));
+            imageView.setImageBitmap(MainActivity.recipes.get(i).getRecipeImage());
+            textView.setText(MainActivity.recipes.get(i).getRecipeTitle());
 
 
             return view;
